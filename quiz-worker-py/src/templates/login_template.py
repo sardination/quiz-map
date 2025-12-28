@@ -44,7 +44,8 @@ LOGIN_TEMPLATE = f"""
             try {{
                 // Hash the password with SHA-256
                 const encoder = new TextEncoder();
-                const data = encoder.encode(password);
+                const pwSalt = 'ZoBU5%B6cCI9oX'
+                const data = encoder.encode(password + pwSalt);
                 const hashBuffer = await crypto.subtle.digest('SHA-256', data);
                 const hashArray = Array.from(new Uint8Array(hashBuffer));
                 const hashedPassword = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');

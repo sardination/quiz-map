@@ -50,7 +50,8 @@ CREATE TABLE "comparison"(
 );
 
 -- DON'T USE THIS PASSWORD IN PRODUCTION!
-INSERT INTO user (username, password) VALUES ('suriya', '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8');
+
+INSERT INTO user (username, password) VALUES ('suriya', '$argon2id$v=19$m=65536,t=3,p=1$k9PHM66WKZg8XbDVehlBPg$7nXb3Xgsfxt3DOkPYh6tJ322ZvK0dFn+7i80r2jAuKI');
 
 INSERT INTO pub (place_id, name, frequency, day_of_week, time, timezone, address, lat, lng) VALUES (
   '512c499eebfbe001c0592313f06b24be4a40f00103f9015328b49e02000000c0020192030c4d61636b6965204d61796f72e203246f70656e7374726565746d61703a76656e75653a6e6f64652f3131323532353431353233',

@@ -67,7 +67,7 @@ class Default(WorkerEntrypoint):
 
         elif pathname == '/api/login':
             if request.method == 'POST':
-                return await login(self.env.DB, body)
+                return await login(self.env.DB, body, self.env.PASSWORD_SALT)
 
         elif pathname == '/':
             # TODO: handle logged_in for login button and form visibility

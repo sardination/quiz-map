@@ -8,6 +8,7 @@ dependencies = [
     "webtypy>=0.1.7",
     "pytz",
     "pyjwt",
+    "argon2-cffi",
 ]
 
 [dependency-groups]

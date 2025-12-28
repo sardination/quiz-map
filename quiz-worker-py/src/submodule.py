@@ -1,5 +1,6 @@
 from workers import Response
 
+from argon2 import PasswordHasher
 import json
 import random
 from js import Object
@@ -55,21 +56,40 @@ async def profile_page(logged_in_user_id, db):
         headers={"Content-Type": "text/html"}
     )
 
-async def login(db, body):
+async def login(db, body, server_salt):
+    failure_response = Response.json(
+        {'message': 'No users with these credentials'},
+        status=401
+    )
+
+    salted_password = body['password'] + server_salt
+
     query = (
         await db.prepare(
-            "SELECT * FROM user WHERE username = ? AND password = ?"
+            "SELECT * FROM user WHERE username = ?"
         )
-        .bind(body['username'], body['password'])
+        .bind(body['username'])
         .run()
     )
     if len(query.results) == 0:
-        return Response.json(
-            {'message': 'No users with these credentials'},
-            status=401
-        )
+        return failure_response
 
     user = query.results[0]
+
+    db_hashed_password = user.password
+    ph = PasswordHasher()
+    try:
+        ph.verify(db_hashed_password, salted_password)
+    except:
+        return failure_response
+
+    if ph.check_needs_rehash(db_hashed_password):
+        (
+            await db.prepare(
+                "UPDATE user SET password = ? WHERE username = ?"
+            )
+            .bind(ph.hash(salted_password), body['username'])
+        )
 
     return Response.json({
         'message': 'Successfully logged in',
