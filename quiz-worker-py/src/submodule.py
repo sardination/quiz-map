@@ -223,10 +223,10 @@ async def post_visit(logged_in_user_id, db, body):
     )
     visit = query.results[0]
 
-    # Find (up to) three random noninclusive pubs to compare against
+    # Find (up to) three random noninclusive visited pubs to compare against
     noninclusive_pubs = (
         await db.prepare(
-            "SELECT id FROM pub WHERE id != ?"
+            "SELECT DISTINCT pub_id AS id FROM visit WHERE pub_id != ?"
         ).bind(body['pub_id'])
         .run()
     ).results

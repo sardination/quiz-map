@@ -1,5 +1,9 @@
 ### quiz_maps
 
+TODO:
+* Edit pub quiz information (including making a quiz inactive - show on ranking but not on upcoming events)
+
+
 Site to show pub quiz days and ratings around Manchester.
 
 For each quiz, show

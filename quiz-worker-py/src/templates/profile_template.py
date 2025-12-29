@@ -71,8 +71,6 @@ def PROFILE_TEMPLATE(
     <body>
         <h1>Visits Tracker</h1>
 
-        <!-- TODO: at the top, have all pending comparisons -->
-
         <table width="100%">
             <tr valign="top">
                 <!-- Left side: List of visits -->
@@ -112,11 +110,8 @@ def PROFILE_TEMPLATE(
                     <br><br>
 
                     <!-- Comparison Form -->
-                    <!-- TODO: don't show this until the visit form has been submitted -->
                     <div id="newComparisonInfo">
                     </div>
-
-                    <!-- TODO: once comparisons are done, refresh page -->
                 </td>
             </tr>
         </table>
