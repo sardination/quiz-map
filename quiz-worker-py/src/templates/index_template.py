@@ -64,6 +64,8 @@ def INDEX_TEMPLATE(
             weeks_of_month_str = ', '.join(weeks_of_month[:-1])
             sep_comma = ',' if len(weeks_of_month) > 2 else ''
             weeks_of_month_str = f"{weeks_of_month_str}{sep_comma} and {weeks_of_month[-1]}"
+        elif len(weeks_of_month) == 1:
+            weeks_of_month_str = weeks_of_month[0]
 
         return weeks_of_month_str
 
