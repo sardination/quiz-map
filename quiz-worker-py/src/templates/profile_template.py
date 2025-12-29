@@ -225,8 +225,12 @@ def PROFILE_TEMPLATE(
                 `
                 document.getElementById('newVisitInfo').innerHTML = visitInfoContent;
 
-                // TODO: Add comparison form (loop through)
                 const comparisons = visitResult['comparisons']
+
+                // If there are no comparisons to be made, immediately refresh the page
+                if (comparisons.length == 0) {{
+                    window.location.reload();
+                }}
 
                 var newComparisonFormContent = "<h2>Which is Better?</h2>";
                 for (var i=0; i < comparisons.length; i++) {{

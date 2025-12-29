@@ -232,21 +232,26 @@ async def post_visit(logged_in_user_id, db, body):
     ).results
     compare_pubs = random.sample(noninclusive_pubs, min(3, len((noninclusive_pubs))))
 
-    # Create empty comparisons
-    bind_values = []
-    for compare_pub in compare_pubs:
-        bind_values.extend([visit.id, compare_pub.id])
-
-    comparison_query = (
-        await db.prepare(
-            f"INSERT INTO comparison (visit_id, compare_pub_id) VALUES {', '.join(["(?,?)"] * len(compare_pubs))} RETURNING *"
-        ).bind(*bind_values)
-        .run()
-    )
-
     response = Object.new()
     response.visit = visit
-    response.comparisons = comparison_query.results
+
+    if len(compare_pubs) > 0:
+        # Create empty comparisons
+        bind_values = []
+        for compare_pub in compare_pubs:
+            bind_values.extend([visit.id, compare_pub.id])
+
+        comparison_query = (
+            await db.prepare(
+                f"INSERT INTO comparison (visit_id, compare_pub_id) VALUES {', '.join(["(?,?)"] * len(compare_pubs))} RETURNING *"
+            ).bind(*bind_values)
+            .run()
+        )
+
+        response.comparisons = comparison_query.results
+
+    else:
+        response.comparisons = []
 
     return Response.json(response)
 
