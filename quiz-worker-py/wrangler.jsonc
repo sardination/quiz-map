@@ -4,6 +4,12 @@
  */
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
+	"routes": [
+		{
+			"pattern": "quizzes.suriya.io",
+			"custom_domain": true
+		}
+	],
 	"name": "quiz-maps",
 	"main": "src/entry.py",
 	"compatibility_date": "2025-11-09",
