@@ -101,9 +101,19 @@ def INDEX_TEMPLATE(
         // Geoapify for geocoding
         const geoapifyApiKey = "{geoapify_key}";
 
+        // The location that is currently being edited
+        var currentEditLoc = null;
+
         // Function to add location to database
-        async function addToDatabase(place_id, address, timezone, lat, lng, pub_id) {{
+        async function addToDatabase() {{
+            const pub_id = currentEditLoc.id;
             const edit = pub_id !== undefined;
+
+            const place_id = currentEditLoc.place_id;
+            const address = currentEditLoc.formatted;
+            const timezone = edit ? currentEditLoc.timezone : currentEditLoc.timezone.name;
+            const lat = currentEditLoc.lat;
+            const lng = edit ? currentEditLoc.lng : currentEditLoc.lon;
 
             // TODO: prevent double-submit
             const formId = `form-${{place_id}}`;
@@ -169,11 +179,12 @@ def INDEX_TEMPLATE(
                   .on('remove', function () {{
                     marker.unbindPopup()
                           .bindPopup(getInfoPopup(location))
+                    currentEditLoc = null;
                   }})
         }}
 
         function getPubFormPopup(loc, edit) {{
-            // TODO: fill the form if edit is true
+            currentEditLoc = loc;
 
             const formId = `form-${{loc.place_id}}`;
 
@@ -243,7 +254,7 @@ def INDEX_TEMPLATE(
 
                         <br>
 
-                        <button type="button" onclick="addToDatabase('${{loc.place_id}}', '${{loc.formatted}}', '${{edit ? loc.timezone : loc.timezone.name}}', ${{loc.lat}}, ${{loc.lon}}, ${{loc.id}})">${{edit ? 'Update' : 'Add'}}</button>
+                        <button type="button" onclick="addToDatabase()">${{edit ? 'Update' : 'Add'}}</button>
                     </form>
                 </div>
             `;
@@ -264,13 +275,12 @@ def INDEX_TEMPLATE(
                 .bindPopup(popupContent)
                 .openPopup();
 
-            // If the popup is closed, remove the pin.
+            // If the popup is closed, remove the pin and set editing loc to null.
             marker.getPopup()
                   .on('remove', function () {{
-                    marker.remove()
+                    marker.remove();
+                    currentEditLoc = null;
                   }})
-
-            // TODO: delete popup (+ remove pin if applicable) on search new location or add to database or cancel (TODO add to popup)
           }},
           suggestionsCallback: (suggestions) => {{
             // console.log(suggestions);
