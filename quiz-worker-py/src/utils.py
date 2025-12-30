@@ -56,8 +56,10 @@ def _date_at_num_week(year, month, weekday, num_weeks):
 
 def get_upcoming_events(pubs, time_span=timedelta(weeks=1)):
     """Find upcoming quizzes within the time span from today"""
-    # TODO: deal with timezone - db stores it as local time along with timezone (store in local time instead of UTC because of daylight savings)
-    # -- NOTE: get timezone from map API
+
+    # Only get active pubs
+    pubs = filter(lambda pub: pub.active == 1, pubs)
+
     upcoming_events = []
     for pub in pubs:
         today = (datetime.now(tz=pytz.timezone(pub.timezone))).date()
@@ -97,7 +99,6 @@ def get_upcoming_events(pubs, time_span=timedelta(weeks=1)):
 
         event_time = datetime.strptime(pub.time, "%H:%M").time()
         upcoming_events.extend([
-            # TODO: add timezone
             (pub, datetime.combine(event_date, event_time, tzinfo=pytz.timezone(pub.timezone)))
             for event_date in next_event_dates
         ])

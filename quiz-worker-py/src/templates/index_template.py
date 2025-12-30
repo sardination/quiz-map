@@ -85,7 +85,8 @@ def INDEX_TEMPLATE(
             raw_time: "{pub.time}",
             frequency: "{pub.frequency}",
             day_of_week: "{days_of_week[pub.day_of_week]}",
-            weeks_of_month: "{get_js_weeks_of_month_str(pub)}"
+            weeks_of_month: "{get_js_weeks_of_month_str(pub)}",
+            active: {pub.active}
         }},
         """
         for pub in all_pubs
@@ -119,7 +120,8 @@ def INDEX_TEMPLATE(
                 time: formData.get('time'),
                 timezone: timezone,
                 lat: lat,
-                lng: lng
+                lng: lng,
+                active: formData.get('active') == '1' ? 1 : 0
             }};
 
             if (edit) {{
@@ -235,6 +237,11 @@ def INDEX_TEMPLATE(
 
                         <label>Time:</label><br>
                         <input type="time" name="time" value="${{timeValue}}" style="width: 100%; margin-bottom: 10px;"><br>
+
+                        <label>Active?</label>
+                        <input type="checkbox" name="active" value="1" ${{loc.active != 0 ? 'checked' : ''}}><br>
+
+                        <br>
 
                         <button type="button" onclick="addToDatabase('${{loc.place_id}}', '${{loc.formatted}}', '${{edit ? loc.timezone : loc.timezone.name}}', ${{loc.lat}}, ${{loc.lon}}, ${{loc.id}})">${{edit ? 'Update' : 'Add'}}</button>
                     </form>
@@ -361,7 +368,7 @@ def INDEX_TEMPLATE(
                 const freq = loc.frequency == 'weekly' ? `${{loc.day_of_week}}s` : `the ${{loc.weeks_of_month}} ${{loc.day_of_week}} of the month`
 
                 return `
-                    <h4>${{loc.name}}</h4>
+                    <h4>${{loc.name}}${{loc.active == 0 ? ' <strong>(INACTIVE)</strong>' : ''}}</h4>
                     <p>${{loc.address}}</p>
                     <p>${{loc.time}} on ${{freq}}</p>
                     {'<button onclick="editPub(${loc.id})">Edit</button>' if logged_in_user_id is not None else ''}
@@ -395,7 +402,7 @@ def INDEX_TEMPLATE(
             var markerLayer = L.layerGroup().addTo(map);
             var locIdMap = new Map();
             locations.forEach(loc => {{
-                var marker = L.marker([loc.lat, loc.lng], {{title: loc.name}})
+                var marker = L.marker([loc.lat, loc.lng], {{title: loc.name, opacity: loc.active == 0 ? 0.5 : 1}})
                     .addTo(map)
                     .bindPopup(getInfoPopup(loc));
                 markerLayer.addLayer(marker);

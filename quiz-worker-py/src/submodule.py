@@ -145,8 +145,8 @@ async def post_pub(logged_in_user_id, db, body):
                 INSERT INTO pub (
                     place_id, name, address, frequency,
                     day_of_week, weeks_of_month, time, timezone,
-                    lat, lng
-                ) VALUES (?,?,?,?,?,?,?,?,?,?) RETURNING *
+                    lat, lng, active
+                ) VALUES (?,?,?,?,?,?,?,?,?,?,?) RETURNING *
             """,
         )
         .bind(
@@ -159,7 +159,8 @@ async def post_pub(logged_in_user_id, db, body):
             body['time'],
             body['timezone'],
             body['lat'],
-            body['lng']
+            body['lng'],
+            body['active']
         )
         .run()
     )
@@ -171,7 +172,7 @@ async def put_pub(logged_in_user_id, db, body):
         await db.prepare(
             """
                 UPDATE pub
-                SET name = ?, frequency = ?, day_of_week = ?, weeks_of_month = ?, time = ?
+                SET name = ?, frequency = ?, day_of_week = ?, weeks_of_month = ?, time = ?, active = ?
                 WHERE id = ?
                 RETURNING *
             """,
@@ -182,6 +183,7 @@ async def put_pub(logged_in_user_id, db, body):
             body['dayOfWeek'],
             ','.join(body.get('weeksOfMonth', [])),
             body['time'],
+            body['active'],
             body['id']
         )
         .run()

@@ -1,11 +1,5 @@
 ### quiz_maps
 
-TODO:
-* Edit pub quiz information (including making a quiz inactive - show on ranking but not on upcoming events)
-- Add edit button to tooltip and turn into a form.
-- Show inactive pubs on a separate page.
-* Show number of visits
-
 Site to show pub quiz days and ratings around Manchester.
 
 Method:
