@@ -151,17 +151,6 @@ def INDEX_TEMPLATE(
             }}
         }}
 
-        function getInfoPopup(loc) {{
-            const freq = loc.frequency == 'weekly' ? `${{loc.day_of_week}}s` : `the ${{loc.weeks_of_month}} ${{loc.day_of_week}} of the month`
-
-            return `
-                <h4>${{loc.name}}</h4>
-                <p>${{loc.address}}</p>
-                <p>${{loc.time}} on ${{freq}}</p>
-                {'<button onclick="editPub(${loc.id})">Edit</button>' if logged_in_user_id is not None else ''}
-            `
-        }}
-
         function editPub(locId) {{
             const location = locations.filter((loc) => loc.id == locId)[0]
             const marker = map._layers[locIdMap.get(locId)];
@@ -368,6 +357,17 @@ def INDEX_TEMPLATE(
         </div>
 
         <script>
+            function getInfoPopup(loc) {{
+                const freq = loc.frequency == 'weekly' ? `${{loc.day_of_week}}s` : `the ${{loc.weeks_of_month}} ${{loc.day_of_week}} of the month`
+
+                return `
+                    <h4>${{loc.name}}</h4>
+                    <p>${{loc.address}}</p>
+                    <p>${{loc.time}} on ${{freq}}</p>
+                    {'<button onclick="editPub(${loc.id})">Edit</button>' if logged_in_user_id is not None else ''}
+                `
+            }}
+
             // Pub locations
             const locations = [
                 {locations}
@@ -416,8 +416,8 @@ def INDEX_TEMPLATE(
             L.control.zoom({{ position: 'bottomright' }}).addTo(map);
 
             // Focus pin
-            function focusPin(placeId) {{
-                var marker = map._layers[locIdMap.get(placeId)];
+            function focusPin(locId) {{
+                var marker = map._layers[locIdMap.get(locId)];
                 map.panTo(marker._latlng);
                 marker.openPopup();
             }}
